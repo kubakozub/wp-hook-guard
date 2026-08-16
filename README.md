@@ -1,5 +1,7 @@
 # wp-hook-guard
 
+[![tests](https://github.com/kubakozub/wp-hook-guard/actions/workflows/tests.yml/badge.svg)](https://github.com/kubakozub/wp-hook-guard/actions/workflows/tests.yml)
+
 **Find the WordPress plugin entry points that anyone can reach but nobody guarded.**
 
 `wp-hook-guard` is a fast, dependency-free static analyzer that reads a WordPress
