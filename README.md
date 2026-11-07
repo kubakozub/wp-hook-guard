@@ -7,14 +7,14 @@
 `wp-hook-guard` is a fast, dependency-free static analyzer that reads a WordPress
 plugin or theme's PHP source, enumerates every server-side entry point a user (or
 an *unauthenticated* visitor) can trigger, and flags the ones that are **missing an
-authorization or nonce check**. That single bug class — *broken access control* —
+authorization or nonce check**. That single bug class, *broken access control*,
 covers most of the highest-impact WordPress vulnerabilities: privilege escalation,
 CSRF, unauthenticated option/row writes, and public REST endpoints that should
 never have been public.
 
 It is a **triage aid for security researchers and plugin authors**, not a prover.
 It gets you from "10,000 lines of unfamiliar plugin code" to "these six handlers
-are reachable and unguarded — look here first" in well under a second.
+are reachable and unguarded: look here first" in well under a second.
 
 - **Zero dependencies.** Pure Python 3.9+ standard library.
 - **No network, no execution, no payloads.** It only reads source files.
@@ -22,7 +22,7 @@ are reachable and unguarded — look here first" in well under a second.
   never produce false hits, and handlers are resolved to their bodies across files.
 
 > Companion to `wp-authz-audit`: where that tool audits authorization decisions,
-> `wp-hook-guard` answers the prior question — *which entry points exist, and which
+> `wp-hook-guard` answers the prior question: *which entry points exist, and which
 > are undefended in the first place?*
 
 ---
@@ -83,7 +83,7 @@ Requires **Python 3.9+**. That's it.
 ## Usage
 
 ```bash
-# Scan a plugin directory (recursive) — readable table by default
+# Scan a plugin directory (recursive): readable table by default
 python -m wp_hook_guard scan /path/to/wp-content/plugins/acme-widgets
 
 # Focus on what matters: hide entry points that already look guarded
@@ -132,22 +132,22 @@ Verdict:  UNGUARDED=5
 
 ## How to read the results
 
-**REACH** — who can trigger the handler:
+**REACH**, who can trigger the handler:
 
-- `unauth` — reachable by an unauthenticated visitor (`*_nopriv_`, public REST,
+- `unauth`: reachable by an unauthenticated visitor (`*_nopriv_`, public REST,
   `init`/`wp_loaded`). Highest interest.
-- `auth` — reachable by *any* logged-in user, including a Subscriber
+- `auth`: reachable by *any* logged-in user, including a Subscriber
   (`wp_ajax_`, `admin_post_`, `admin_init`). This is the classic privilege-escalation surface.
 
-**VERDICT** — the guard assessment:
+**VERDICT**: the guard assessment:
 
-- `UNGUARDED` — reachable, performs a sensitive operation, and has **no capability/auth
+- `UNGUARDED`: reachable, performs a sensitive operation, and has **no capability/auth
   check** appropriate to its reach. This is the bug.
-- `WEAK` — a guard exists but a real gap remains (e.g. capability present but **no nonce**
+- `WEAK`, a guard exists but a real gap remains (e.g. capability present but **no nonce**
   on a state-changing handler → CSRF; or reachable but no sensitive sink was detected).
-- `UNKNOWN` — the handler or `permission_callback` couldn't be resolved statically
+- `UNKNOWN`: the handler or `permission_callback` couldn't be resolved statically
   (dynamic callable, computed hook). Worth a manual look.
-- `GUARDED` — an appropriate authorization check was found.
+- `GUARDED`: an appropriate authorization check was found.
 
 **SEVERITY** is a heuristic combining **reach × what the handler does** (its "sink"):
 
@@ -201,7 +201,7 @@ Focus: 5 newly-exposed and 0 regressed entry point(s).
 ```
 
 The **Focus** line is the payoff: newly-exposed entry points and any that
-**regressed from `GUARDED` to not-guarded** between versions — exactly the deltas worth
+**regressed from `GUARDED` to not-guarded** between versions, exactly the deltas worth
 opening a diff for. Add `--json` to feed the comparison into other tooling, or
 `--only-unguarded` to suppress guarded additions.
 
@@ -211,7 +211,7 @@ opening a diff for. Add `--json` to feed the comparison into other tooling, or
 
 `wp-hook-guard` is a heuristic triage tool. PHP is not fully parsed or executed, so it
 trades completeness for speed and low noise. Treat every finding as a **lead to verify**,
-never as a confirmed vulnerability — and remember it can miss things.
+never as a confirmed vulnerability, and remember it can miss things.
 
 Known blind spots (documented on purpose):
 
@@ -221,7 +221,7 @@ Known blind spots (documented on purpose):
   missed, lowering severity.
 - **Dynamic hooks & callables.** Hook names built at runtime (`"wp_ajax_" . $x`) and
   dynamic callbacks (`$this->cb`, variable function names) are reported as `UNKNOWN` or
-  skipped — they can't be resolved statically.
+  skipped, they can't be resolved statically.
 - **Early-return / conditional guards.** A check that only runs on one code path, or that
   `wp_die()`s inside an `if`, is detected as *present* but its control flow is not modeled.
 - **Custom capability logic.** Authorization performed without the standard WordPress
@@ -241,7 +241,7 @@ it so you can confirm or dismiss it quickly.
 
 This tool performs **static source analysis on code you already have**. It sends no
 network traffic and produces no exploits. Use it only against software you are
-**authorized** to review — your own plugins, code you are engaged to assess, or targets
+**authorized** to review: your own plugins, code you are engaged to assess, or targets
 covered by a bug-bounty program's scope and rules. Always follow coordinated-disclosure
 practices when reporting what you find.
 
@@ -254,8 +254,8 @@ practices when reporting what you find.
 python -m unittest discover -v
 ```
 
-The `tests/fixtures/` directory contains small, synthetic plugins — one deliberately
-vulnerable, one safe, plus class-based, REST, and lexer edge cases — used to pin the
+The `tests/fixtures/` directory contains small, synthetic plugins, one deliberately
+vulnerable, one safe, plus class-based, REST, and lexer edge cases: used to pin the
 scanner's behavior. They are original examples written for this project; no third-party
 plugin code is included.
 
