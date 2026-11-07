@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wp-hook-guard"
-version = "0.1.0"
+version = "1.0.0"
 description = "Static analyzer that flags WordPress plugin/theme entry points missing authorization or nonce guards (broken access control, CSRF, privilege escalation)."
 readme = "README.md"
 requires-python = ">=3.9"
